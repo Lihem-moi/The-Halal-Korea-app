@@ -4,97 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>The Halal Korea</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/L6vV3Y9/the-halal-korea-icon.png">
-    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
     <style>
+        /* STRUCTURE FORCEE POUR EVITER LE DOUBLON */
         :root { --main-green: #2e7d32; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; display: flex; flex-direction: column; background: white; }
         
-        /* La Carte */
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; background: #e5e3df; }
+        /* On crée un conteneur qui fait EXACTEMENT la taille de l'écran */
+        #app-container { position: relative; flex: 1; width: 100vw; height: 100vh; display: block; }
+        #map { width: 100%; height: 100%; background: #e5e3df; }
 
-        /* Barre de recherche (Style Moderne) */
-        .search-container {
-            position: absolute; top: 50px; left: 50%; transform: translateX(-50%);
-            z-index: 1000; width: 90%; max-width: 400px;
-        }
-        .search-bar {
-            width: 100%; padding: 12px 20px; border-radius: 30px; border: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: 16px; outline: none;
-        }
+        .search-container { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; }
+        .search-bar { width: 100%; padding: 12px 20px; border-radius: 30px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: 16px; box-sizing: border-box; }
 
-        /* Menu du bas (Navbar comme sur l'image) */
-        .bottom-nav {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            z-index: 1000; width: 90%; max-width: 400px;
-            background: white; display: flex; justify-content: space-around;
-            padding: 15px 0; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .nav-item { color: #888; font-size: 20px; text-decoration: none; display: flex; flex-direction: column; align-items: center; }
+        .bottom-nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .nav-item { color: #888; font-size: 20px; text-decoration: none; text-align: center; }
         .nav-item.active { color: var(--main-green); }
-        .nav-label { font-size: 10px; margin-top: 4px; font-weight: bold; }
+        .nav-label { font-size: 10px; display: block; font-weight: bold; }
 
-        /* Bouton Ma Position */
-        .locate-btn {
-            position: absolute; bottom: 100px; right: 20px; z-index: 1000;
-            background: white; width: 50px; height: 50px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; font-size: 22px;
-        }
+        .locate-btn { position: absolute; bottom: 110px; right: 20px; z-index: 2000; background: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; font-size: 22px; }
     </style>
 </head>
 <body>
 
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Rechercher un restaurant halal...">
+    <div id="app-container">
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Rechercher à Séoul...">
+        </div>
+
+        <div id="map"></div>
+
+        <button class="locate-btn" onclick="findMe()">📍</button>
+
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active">📍<span class="nav-label">Carte</span></a>
+            <a href="#" class="nav-item">⭐<span class="nav-label">Favoris</span></a>
+            <a href="#" class="nav-item">👤<span class="nav-label">Profil</span></a>
+        </nav>
     </div>
-
-    <div id="map"></div>
-
-    <button class="locate-btn" onclick="findMe()">📍</button>
-
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item active">📍<span class="nav-label">Carte</span></a>
-        <a href="#" class="nav-item">⭐<span class="nav-label">Favoris</span></a>
-        <a href="#" class="nav-item">👤<span class="nav-label">Profil</span></a>
-    </nav>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialisation propre
-        var map = L.map('map', { zoomControl: false }).setView([37.5665, 126.9780], 13);
+        // ON DETRUIT TOUTE INSTANCE EXISTANTE AVANT DE COMMENCER
+        if (window.map) { window.map.remove(); }
 
-        // On utilise un style de carte plus "Propre" (CartoDB Positron)
+        var map = L.map('map', { 
+            zoomControl: false, 
+            worldCopyJump: false, // Empeche de voir plusieurs fois le monde en scrollant
+            maxBounds: [[32, 123], [44, 133]], // Bloque la vue sur la Corée uniquement
+            maxBoundsViscosity: 1.0 
+        }).setView([37.5665, 126.9780], 13);
+
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '©OpenStreetMap'
+            noWrap: true, // COMMANDE CRUCIALE : Empeche la répétition de la carte
+            bounds: [[32, 123], [44, 133]]
         }).addTo(map);
 
-        // Icône personnalisée (Croissant vert)
         var halalIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: "<div style='background-color:#2e7d32; color:white; padding:5px; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.3)'>🌙</div>",
-            iconSize: [30, 42], iconAnchor: [15, 42]
+            className: 'custom-icon',
+            html: "<div style='background-color:#2e7d32; color:white; padding:5px; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center; border:2px solid white;'>🌙</div>",
+            iconSize: [30, 30]
         });
 
-        // Test : Mosquée d'Itaewon
-        L.marker([37.5332, 126.9977], {icon: halalIcon}).addTo(map)
-         .bindPopup("<b>Grande Mosquée de Séoul</b><br>Itaewon");
+        L.marker([37.5332, 126.9977], {icon: halalIcon}).addTo(map).bindPopup("Mosquée d'Itaewon");
 
-        function findMe() {
-            map.locate({setView: true, maxZoom: 16});
-        }
+        function findMe() { map.locate({setView: true, maxZoom: 16}); }
 
-        map.on('locationfound', function(e) {
-            L.marker(e.latlng).addTo(map).bindPopup("Vous êtes ici").openPopup();
+        // Rafraîchissement forcé pour Xiaomi
+        window.addEventListener('load', function() {
+            setTimeout(function(){ 
+                map.invalidateSize();
+            }, 400);
         });
-
-        // Correction du bug d'affichage Xiaomi/iPhone
-        window.onload = function() {
-            setTimeout(function(){ map.invalidateSize(); }, 500);
-        };
     </script>
 </body>
 </html>
