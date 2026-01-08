@@ -4,45 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>The Halal Korea</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2e7d32">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/L6vV3Y9/the-halal-korea-icon.png">
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        /* STRUCTURE FORCEE POUR EVITER LE DOUBLON */
         :root { --main-green: #2e7d32; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; display: flex; flex-direction: column; background: white; }
-        
-        /* On crée un conteneur qui fait EXACTEMENT la taille de l'écran */
-        #app-container { position: relative; flex: 1; width: 100vw; height: 100vh; display: block; }
-        #map { width: 100%; height: 100%; background: #e5e3df; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; display: flex; flex-direction: column; font-family: sans-serif; }
+        #app-container { position: relative; flex: 1; width: 100vw; height: 100vh; }
+        #map { width: 100%; height: 100%; background: #e5e3df; z-index: 1; }
 
-        .search-container { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; }
-        .search-bar { width: 100%; padding: 12px 20px; border-radius: 30px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: 16px; box-sizing: border-box; }
+        /* Design de la barre de recherche peaufine */
+        .search-container { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 400px; }
+        .search-wrapper { position: relative; display: flex; align-items: center; }
+        .search-icon { position: absolute; left: 15px; color: #888; }
+        .search-bar { width: 100%; padding: 12px 12px 12px 45px; border-radius: 30px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: 16px; outline: none; }
 
-        .bottom-nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .nav-item { color: #888; font-size: 20px; text-decoration: none; text-align: center; }
+        /* Menu du bas */
+        .bottom-nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .nav-item { color: #888; font-size: 20px; text-decoration: none; text-align: center; border: none; background: none; cursor: pointer; }
         .nav-item.active { color: var(--main-green); }
-        .nav-label { font-size: 10px; display: block; font-weight: bold; }
+        .nav-label { font-size: 10px; display: block; font-weight: bold; margin-top: 2px; }
 
-        .locate-btn { position: absolute; bottom: 110px; right: 20px; z-index: 2000; background: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; font-size: 22px; }
+        .locate-btn { position: absolute; bottom: 115px; right: 20px; z-index: 2000; background: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; font-size: 22px; }
     </style>
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <link rel="manifest" href="manifest.json">
-
-<meta name="theme-color" content="#2e7d32">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
 </head>
 <body>
 
     <div id="app-container">
         <div class="search-container">
-            <input type="text" class="search-bar" placeholder="Rechercher à Séoul...">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-bar" placeholder="Rechercher à Séoul...">
+            </div>
         </div>
 
         <div id="map"></div>
@@ -50,53 +49,35 @@
         <button class="locate-btn" onclick="findMe()">📍</button>
 
         <nav class="bottom-nav">
-            <a href="#" class="nav-item active">📍<span class="nav-label">Carte</span></a>
-            <a href="#" class="nav-item">⭐<span class="nav-label">Favoris</span></a>
-            <a href="#" class="nav-item">👤<span class="nav-label">Profil</span></a>
+            <button class="nav-item active">📍<span class="nav-label">Carte</span></button>
+            <button class="nav-item">⭐<span class="nav-label">Favoris</span></button>
+            <button class="nav-item">👤<span class="nav-label">Profil</span></button>
         </nav>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // ON DETRUIT TOUTE INSTANCE EXISTANTE AVANT DE COMMENCER
-        if (window.map) { window.map.remove(); }
-
-        var map = L.map('map', { 
-            zoomControl: false, 
-            worldCopyJump: false, // Empeche de voir plusieurs fois le monde en scrollant
-            maxBounds: [[32, 123], [44, 133]], // Bloque la vue sur la Corée uniquement
-            maxBoundsViscosity: 1.0 
-        }).setView([37.5665, 126.9780], 13);
-
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            noWrap: true, // COMMANDE CRUCIALE : Empeche la répétition de la carte
-            bounds: [[32, 123], [44, 133]]
-        }).addTo(map);
-
-        var halalIcon = L.divIcon({
-            className: 'custom-icon',
-            html: "<div style='background-color:#2e7d32; color:white; padding:5px; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center; border:2px solid white;'>🌙</div>",
-            iconSize: [30, 30]
-        });
-
-        L.marker([37.5332, 126.9977], {icon: halalIcon}).addTo(map).bindPopup("Mosquée d'Itaewon");
+        // Initialisation de la carte avec sécurité anti-doublon
+        var map = L.map('map', { zoomControl: false, worldCopyJump: false }).setView([37.5665, 126.9780], 13);
+        
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { noWrap: true }).addTo(map);
 
         function findMe() { map.locate({setView: true, maxZoom: 16}); }
+        
+        map.on('locationfound', function(e) {
+            L.marker(e.latlng).addTo(map).bindPopup("Vous êtes ici").openPopup();
+        });
 
-        // Rafraîchissement forcé pour Xiaomi
+        // Correction du bug d'affichage au chargement
         window.addEventListener('load', function() {
-            setTimeout(function(){ 
-                map.invalidateSize();
-            }, 400);
+            setTimeout(function(){ map.invalidateSize(); }, 500);
+            // Enregistrement du Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(function(err) {
+                    console.log("Erreur SW:", err);
+                });
+            }
         });
     </script>
-    
-    <script>
-    // Enregistrement du Service Worker pour permettre l'installation
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-    }
-    </script>
-    
 </body>
 </html>
