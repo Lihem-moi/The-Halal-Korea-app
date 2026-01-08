@@ -1,0 +1,16 @@
+{
+  "name": "The Halal Korea",
+  "short_name": "Halal Korea",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2e7d32",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/L6vV3Y9/the-halal-korea-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
