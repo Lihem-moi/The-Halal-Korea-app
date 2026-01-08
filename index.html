@@ -84,5 +84,13 @@
             }, 400);
         });
     </script>
+    
+    <script>
+    // Enregistrement du Service Worker pour permettre l'installation
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+    }
+    </script>
+    
 </body>
 </html>
