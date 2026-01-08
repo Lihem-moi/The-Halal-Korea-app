@@ -6,30 +6,42 @@
     <title>The Halal Korea</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root { --main-green: #2e7d32; --accent-gold: #fbc02d; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+        :root { --main-green: #2e7d32; --accent-gold: #fbc02d; --bg-light: #f8f9fa; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; background: white; }
         
-        #map { width: 100%; height: 100%; background: #e5e3df; z-index: 1; }
+        #map { width: 100%; height: 100%; background: #e5e3df; z-index: 1; transition: filter 0.3s; }
 
-        /* Barre de recherche et Filtres */
+        /* Interface du haut */
         .top-interface { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 400px; }
         .search-wrapper { position: relative; margin-bottom: 15px; }
         .search-bar { width: 100%; padding: 12px 12px 12px 45px; border-radius: 30px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-size: 16px; outline: none; box-sizing: border-box; }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); }
 
-        /* Filtres (Point 2) */
         .filters-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-        .filters-container::-webkit-scrollbar { display: none; }
-        .filter-btn { background: white; border: none; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.1); color: #555; }
+        .filter-btn { background: white; border: none; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.1); color: #555; cursor: pointer; }
         .filter-btn.active { background: var(--main-green); color: white; }
 
+        /* Fenêtres coulissantes (Modals) */
+        .view-panel { 
+            position: absolute; bottom: -100%; left: 0; width: 100%; height: 80%; 
+            background: var(--bg-light); z-index: 3000; border-radius: 30px 30px 0 0; 
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            padding: 25px; box-sizing: border-box; box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+        }
+        .view-panel.active { bottom: 0; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-btn { font-size: 24px; cursor: pointer; background: #eee; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; }
+
         /* Menu du bas */
-        .bottom-nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .nav-item { color: #888; font-size: 20px; text-decoration: none; text-align: center; border: none; background: none; }
+        .bottom-nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 4000; width: 90%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .nav-item { color: #888; font-size: 20px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
         .nav-item.active { color: var(--main-green); }
-        .nav-label { font-size: 10px; display: block; font-weight: bold; }
+        .nav-label { font-size: 10px; font-weight: bold; margin-top: 2px; }
 
         .locate-btn { position: absolute; bottom: 115px; right: 20px; z-index: 2000; background: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; font-size: 22px; }
+        
+        /* Contenu des Favoris */
+        .fav-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
@@ -43,51 +55,87 @@
             <button class="filter-btn active">Tous</button>
             <button class="filter-btn">🕌 Mosquées</button>
             <button class="filter-btn">🤲🏻 Salles de prière</button>
-            <button class="filter-btn">🛒 Épiceries</button>
         </div>
     </div>
 
     <div id="map"></div>
-
     <button class="locate-btn" onclick="findMe()">📍</button>
 
+    <div id="panel-fav" class="view-panel">
+        <div class="panel-header">
+            <h2>Mes Favoris ⭐</h2>
+            <div class="close-btn" onclick="closePanels()">✕</div>
+        </div>
+        <div class="fav-card">
+            <div style="font-size: 24px;">🕌</div>
+            <div>
+                <div style="font-weight: bold;">Grande Mosquée de Séoul</div>
+                <div style="font-size: 12px; color: #777;">Itaewon-ro, Séoul</div>
+            </div>
+        </div>
+        <p style="text-align: center; color: #999; margin-top: 20px;">D'autres favoris arriveront bientôt !</p>
+    </div>
+
+    <div id="panel-profile" class="view-panel">
+        <div class="panel-header">
+            <h2>Mon Profil 👤</h2>
+            <div class="close-btn" onclick="closePanels()">✕</div>
+        </div>
+        <div style="text-align: center; padding: 20px;">
+            <div style="width: 80px; height: 80px; background: #ddd; border-radius: 50%; margin: 0 auto 15px;"></div>
+            <h3>Bienvenue !</h3>
+            <p style="color: #666;">Connectez-vous pour sauvegarder vos lieux préférés.</p>
+            <button style="background: var(--main-green); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: bold; width: 100%;">Se connecter</button>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
-        <button class="nav-item active">📍<span class="nav-label">Carte</span></button>
-        <button class="nav-item">⭐<span class="nav-label">Favoris</span></button>
-        <button class="nav-item">👤<span class="nav-label">Profil</span></button>
+        <button class="nav-item active" onclick="showView('map')">📍<span class="nav-label">Carte</span></button>
+        <button class="nav-item" onclick="showView('fav')">⭐<span class="nav-label">Favoris</span></button>
+        <button class="nav-item" onclick="showView('profile')">👤<span class="nav-label">Profil</span></button>
     </nav>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        // Carte
         var map = L.map('map', { zoomControl: false }).setView([37.5665, 126.9780], 12);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { noWrap: true }).addTo(map);
 
-        // --- Marqueurs Design (Lieux de culte) ---
+        // Gestion des vues
+        function showView(view) {
+            closePanels();
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            
+            if(view === 'fav') {
+                document.getElementById('panel-fav').classList.add('active');
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+            } else if(view === 'profile') {
+                document.getElementById('panel-profile').classList.add('active');
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+            } else {
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            }
+        }
+
+        function closePanels() {
+            document.getElementById('panel-fav').classList.remove('active');
+            document.getElementById('panel-profile').classList.remove('active');
+        }
+
+        // Marqueurs
         var mosqueIcon = L.divIcon({
             className: 'm-icon',
             html: `<div style="background:var(--main-green); color:white; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:3px solid white; box-shadow:0 3px 10px rgba(0,0,0,0.3)">🕌</div>`,
             iconSize: [35, 35], iconAnchor: [17, 17]
         });
 
-        var prayerIcon = L.divIcon({
-            className: 'p-icon',
-            html: `<div style="background:var(--accent-gold); color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 3px 10px rgba(0,0,0,0.3)">🤲🏻</div>`,
-            iconSize: [30, 30], iconAnchor: [15, 15]
-        });
+        L.marker([37.5332, 126.9977], {icon: mosqueIcon}).addTo(map).bindPopup("<b>Grande Mosquée de Séoul</b>");
 
-        // Ajout des lieux
-        L.marker([37.5332, 126.9977], {icon: mosqueIcon}).addTo(map).bindPopup("<b>Grande Mosquée de Séoul</b><br>Quartier d'Itaewon");
-        L.marker([37.4493, 126.7011], {icon: mosqueIcon}).addTo(map).bindPopup("<b>Mosquée Al-Falah</b><br>Incheon");
-        L.marker([37.5403, 127.0692], {icon: prayerIcon}).addTo(map).bindPopup("<b>Salle de prière Konkuk</b><br>Université Konkuk");
-
-        // --- Fonction Recherche Simple (Point 4) ---
+        // Recherche
         document.getElementById('searchInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
-                var val = this.value.toLowerCase();
-                if(val.includes('itaewon')) {
+                if(this.value.toLowerCase().includes('itaewon')) {
                     map.flyTo([37.5332, 126.9977], 15);
-                } else {
-                    alert("Quartier bientôt disponible ! Testez 'Itaewon'");
                 }
             }
         });
