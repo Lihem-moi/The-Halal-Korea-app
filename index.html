@@ -4,58 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>The Halal Korea</title>
-    
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="https://i.ibb.co/L6vV3Y9/the-halal-korea-icon.png">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Halal Korea">
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
     <style>
-        /* Style Universel : s'adapte à toutes les tailles d'écran */
-        html, body { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            overflow: hidden; background-color: white;
-        }
-        #map { 
-            position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; 
-        }
-        .header { 
-            position: absolute; top: env(safe-area-inset-top, 20px); 
-            left: 50%; transform: translateX(-50%); z-index: 1000; 
-            background: white; padding: 10px 20px; border-radius: 25px; 
-            border: 2px solid #2e7d32; font-weight: bold; color: #2e7d32;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); text-align: center;
-            min-width: 150px; margin-top: 10px;
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: white; }
+        #map { height: 100vh; width: 100vw; z-index: 1; }
+        .header { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; background: white; padding: 10px 20px; border-radius: 25px; border: 2px solid #2e7d32; font-weight: bold; color: #2e7d32; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .locate-btn { position: absolute; bottom: 30px; right: 20px; z-index: 1000; background: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: none; font-size: 24px; cursor: pointer; }
     </style>
 </head>
 <body>
-
     <div class="header">🇰🇷 The Halal Korea</div>
     <div id="map"></div>
+    <button class="locate-btn" onclick="findMe()">📍</button>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialisation sécurisée
-        var map = L.map('map', { 
-            zoomControl: false,
-            tap: false // Désactive le délai de clic sur certains mobiles
-        }).setView([37.5665, 126.9780], 12);
+        // SECURITÉ ANTI-DOUBLE CARTE
+        var container = L.DomUtil.get('map');
+        if (container != null) { container._leaflet_id = null; }
 
-        // Design de carte "Voyager" (très léger et rapide sur mobile)
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            attribution: '©OpenStreetMap'
-        }).addTo(map);
+        var map = L.map('map', { zoomControl: false }).setView([37.5665, 126.9780], 12);
 
-        // Ajout d'un marqueur test (Mosquée)
-        L.marker([37.5332, 126.9977]).addTo(map).bindPopup("Grande Mosquée de Séoul");
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-        // Force la carte à se redimensionner correctement
-        setTimeout(function(){ map.invalidateSize(); }, 500);
+        // Marqueur test
+        L.marker([37.5332, 126.9977]).addTo(map).bindPopup("Mosquée d'Itaewon");
+
+        // Fonction de localisation
+        function findMe() {
+            map.locate({setView: true, maxZoom: 16});
+        }
+        map.on('locationfound', function(e) {
+            L.circle(e.latlng, {radius: 10}).addTo(map);
+            L.marker(e.latlng).addTo(map).bindPopup("Vous êtes ici").openPopup();
+        });
     </script>
 </body>
 </html>
+
+
+
