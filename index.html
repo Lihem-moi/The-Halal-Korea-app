@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Halal Korea</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/L6vV3Y9/the-halal-korea-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="The Halal Korea">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: -apple-system, sans-serif; }
+        #map { height: 100vh; width: 100vw; z-index: 1; }
+        
+        .header { 
+            position: absolute; top: 50px; left: 50%; transform: translateX(-50%); 
+            z-index: 1000; background: white; padding: 12px 20px; 
+            border-radius: 30px; border: 2px solid #2e7d32; font-weight: bold; 
+            color: #2e7d32; width: 75%; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .locate-btn {
+            position: absolute; bottom: 40px; right: 20px; z-index: 1000;
+            background: white; width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-size: 28px; border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">🇰🇷 The Halal Korea</div>
+    <div id="map"></div>
+    <button class="locate-btn" onclick="findMe()">📍</button>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Carte unique centrée sur Séoul
+        var map = L.map('map', { zoomControl: false }).setView([37.5665, 126.9780], 13);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '©OpenStreetMap'
+        }).addTo(map);
+
+        // Icônes personnalisées
+        var greenIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png'
+        });
+
+        // Premier marqueur : Mosquée d'Itaewon
+        L.marker([37.5332, 126.9977], {icon: greenIcon}).addTo(map)
+         .bindPopup("<b>Grande Mosquée de Séoul</b><br>Quartier d'Itaewon");
+
+        // Système de localisation
+        var userMarker;
+        function findMe() {
+            map.locate({setView: true, maxZoom: 16});
+        }
+
+        map.on('locationfound', function(e) {
+            if (userMarker) { map.removeLayer(userMarker); }
+            userMarker = L.marker(e.latlng).addTo(map).bindPopup("Vous êtes ici").openPopup();
+        });
+
+        map.on('locationerror', function() {
+            alert("Active la localisation pour voir ton pin bleu !");
+        });
+    </script>
+</body>
+</html>
