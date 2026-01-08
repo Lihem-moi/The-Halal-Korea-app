@@ -2,7 +2,7 @@
   "name": "The Halal Korea",
   "short_name": "Halal Korea",
   "description": "Trouvez les meilleurs restaurants Halal en Corée",
-  "start_url": "/",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2e7d32",
