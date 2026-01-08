@@ -11,10 +11,16 @@
         
         #map { width: 100%; height: 100%; background: #e5e3df; z-index: 1; }
 
-        /* Interface du haut */
+        /* Interface du haut (RETOUR DES FILTRES) */
         .top-interface { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 400px; }
+        .search-wrapper { position: relative; margin-bottom: 12px; }
         .search-bar { width: 100%; padding: 12px 12px 12px 45px; border-radius: 30px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-size: 16px; outline: none; box-sizing: border-box; }
-        .search-icon { position: absolute; left: 15px; top: 13px; z-index: 2001; }
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); }
+
+        .filters-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .filters-container::-webkit-scrollbar { display: none; }
+        .filter-btn { background: white; border: none; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.1); color: #555; }
+        .filter-btn.active { background: var(--main-green); color: white; }
 
         /* Fenêtres coulissantes */
         .view-panel { 
@@ -26,50 +32,52 @@
         .view-panel.active { bottom: 0; }
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 
-        /* Style des Popups Leaflet */
-        .leaflet-popup-content-wrapper { border-radius: 15px; padding: 5px; }
-        .btn-fav-add { 
-            background: var(--main-green); color: white; border: none; padding: 8px 12px; 
-            border-radius: 20px; margin-top: 10px; cursor: pointer; width: 100%;
-            font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px;
+        /* Popups */
+        .btn-fav { 
+            color: white; border: none; padding: 10px; border-radius: 20px; 
+            margin-top: 10px; cursor: pointer; width: 100%; font-weight: bold;
         }
+        .btn-add { background: var(--main-green); }
+        .btn-remove { background: #555; }
 
         /* Notification */
         #toast { 
-            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
-            background: #333; color: white; padding: 10px 20px; border-radius: 25px;
-            z-index: 5000; transition: top 0.5s; font-size: 14px;
+            position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+            background: #333; color: white; padding: 12px 25px; border-radius: 30px;
+            z-index: 5000; transition: top 0.4s; font-size: 14px; white-space: nowrap;
         }
 
-        /* Menu du bas */
+        /* Menu bas */
         .bottom-nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 4000; width: 90%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .nav-item { color: #888; font-size: 20px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .nav-item { color: #888; font-size: 20px; border: none; background: none; cursor: pointer; text-align: center; }
         .nav-item.active { color: var(--main-green); }
-        .nav-label { font-size: 10px; font-weight: bold; }
-        
+        .nav-label { font-size: 10px; font-weight: bold; display: block; }
+
         .locate-btn { position: absolute; bottom: 115px; right: 20px; z-index: 2000; background: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; font-size: 22px; }
     </style>
 </head>
 <body>
 
-    <div id="toast">Ajouté aux favoris ! ❤️</div>
+    <div id="toast"></div>
 
     <div class="top-interface">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" class="search-bar" placeholder="Chercher Itaewon, Seoul...">
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-bar" placeholder="Chercher Itaewon...">
+        </div>
+        <div class="filters-container">
+            <button class="filter-btn active">Tous</button>
+            <button class="filter-btn">🕌 Mosquées</button>
+            <button class="filter-btn">🤲🏻 Salles de prière</button>
+        </div>
     </div>
 
     <div id="map"></div>
     <button class="locate-btn" onclick="findMe()">📍</button>
 
     <div id="panel-fav" class="view-panel">
-        <div class="panel-header">
-            <h2>Mes Favoris ⭐</h2>
-            <div onclick="closePanels()" style="cursor:pointer; font-size:24px;">✕</div>
-        </div>
-        <div id="fav-list">
-            <p style="text-align: center; color: #999;">Votre liste est vide.</p>
-        </div>
+        <div class="panel-header"><h2>Mes Favoris ⭐</h2><div onclick="showView('map')" style="cursor:pointer; font-size:24px;">✕</div></div>
+        <div id="fav-list"><p style="text-align:center; color:#999;">Aucun favori pour le moment.</p></div>
     </div>
 
     <nav class="bottom-nav">
@@ -80,39 +88,66 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map', { zoomControl: false }).setView([37.5665, 126.9780], 12);
+        var map = L.map('map', { zoomControl: false }).setView([37.5332, 126.9977], 13);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { noWrap: true }).addTo(map);
 
-        // Icones
+        let favoris = new Set();
+
+        function showToast(message) {
+            const t = document.getElementById('toast');
+            t.innerText = message;
+            t.style.top = "25px";
+            setTimeout(() => { t.style.top = "-60px"; }, 2500);
+        }
+
+        function toggleFav(name, id) {
+            const list = document.getElementById('fav-list');
+            if (favoris.has(name)) {
+                favoris.delete(name);
+                showToast(`💔 ${name} va être retiré de vos favoris`);
+            } else {
+                favoris.add(name);
+                showToast(`❤️ ${name} ajouté aux favoris !`);
+            }
+            updateFavUI();
+            map.closePopup();
+        }
+
+        function updateFavUI() {
+            const list = document.getElementById('fav-list');
+            if (favoris.size === 0) {
+                list.innerHTML = '<p style="text-align:center; color:#999;">Aucun favori pour le moment.</p>';
+            } else {
+                list.innerHTML = "";
+                favoris.forEach(name => {
+                    list.innerHTML += `<div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                        <span>${name}</span>
+                        <input type="checkbox" checked onclick="toggleFav('${name}')">
+                    </div>`;
+                });
+            }
+        }
+
         var mosqueIcon = L.divIcon({
             className: 'm-icon',
             html: `<div style="background:var(--main-green); color:white; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:3px solid white; box-shadow:0 3px 10px rgba(0,0,0,0.3)">🕌</div>`,
             iconSize: [35, 35], iconAnchor: [17, 17]
         });
 
-        // Fonction pour ajouter aux favoris
-        function addToFav(name) {
-            const toast = document.getElementById('toast');
-            toast.style.top = "20px";
-            setTimeout(() => { toast.style.top = "-50px"; }, 2000);
-            
-            const list = document.getElementById('fav-list');
-            if(list.innerHTML.includes('vide')) list.innerHTML = '';
-            list.innerHTML += `<div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; box-shadow:0 2px 5px rgba(0,0,0,0.05)"><b>${name}</b></div>`;
+        function createMarker(lat, lng, name) {
+            const m = L.marker([lat, lng], {icon: mosqueIcon}).addTo(map);
+            m.on('click', () => {
+                const isFav = favoris.has(name);
+                const btnText = isFav ? "💔 Retirer de mes favoris" : "❤️ Ajouter aux favoris";
+                const btnClass = isFav ? "btn-remove" : "btn-add";
+                m.bindPopup(`<b>${name}</b><br><button class="btn-fav ${btnClass}" onclick="toggleFav('${name}')">${btnText}</button>`).openPopup();
+            });
         }
 
-        // Marqueur avec bouton favoris
-        const m1 = L.marker([37.5332, 126.9977], {icon: mosqueIcon}).addTo(map);
-        m1.bindPopup(`
-            <b>Grande Mosquée de Séoul</b><br>
-            <button class="btn-fav-add" onclick="addToFav('Grande Mosquée')">
-                <span>❤️</span> Favoris
-            </button>
-        `);
+        createMarker(37.5332, 126.9977, "Grande Mosquée de Séoul");
 
-        // Navigation
         function showView(view) {
-            closePanels();
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             if(view === 'fav') {
                 document.getElementById('panel-fav').classList.add('active');
@@ -120,10 +155,6 @@
             } else {
                 document.querySelectorAll('.nav-item')[0].classList.add('active');
             }
-        }
-
-        function closePanels() {
-            document.getElementById('panel-fav').classList.remove('active');
         }
 
         function findMe() { map.locate({setView: true, maxZoom: 16}); }
