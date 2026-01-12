@@ -71,8 +71,10 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map', { zoomControl: false }).setView([37.5332, 126.9977], 14);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+        var map = L.map('map', { 
+    zoomControl: false, 
+    attributionControl: false 
+}).setView([37.5332, 126.9977], 14);
 
         let favoris = new Set();
 
