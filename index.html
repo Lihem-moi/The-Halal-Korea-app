@@ -200,22 +200,21 @@ window.addEventListener('beforeinstallprompt', (e) => {
     installContainer.style.display = 'block';
 });
 
-btnInstall.addEventListener('click', (e) => {
-    // On cache notre bouton
-    installContainer.style.display = 'none';
-    // On montre la fenêtre d'installation officielle
+btnInstall.addEventListener('click', async () => {
+    if (!deferredPrompt) {
+        showToast("L'installation n'est pas encore prête... Réessaie dans 5 secondes.");
+        return;
+    }
+    // On montre la fenêtre d'installation
     deferredPrompt.prompt();
-    // On attend la réponse de l'utilisateur
-    deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-            console.log('L\'utilisateur a installé l\'app');
-        }
-        deferredPrompt = null;
-    });
-});
-
-// Si l'app est déjà installée, on cache le bouton
-window.addEventListener('appinstalled', (evt) => {
+    
+    // On attend la réponse
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`L'utilisateur a : ${outcome}`);
+    
+    // On remet la variable à zéro
+    deferredPrompt = null;
+    // On cache le bouton seulement si l'installation a été lancée
     installContainer.style.display = 'none';
 });
     </script>
