@@ -77,14 +77,16 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         
-        // 1. On définit la carte sans le logo Leaflet
+        //  On définit la carte sans le logo Leaflet
 var map = L.map('map', { 
     zoomControl: false, 
     attributionControl: false 
 }).setView([37.5332, 126.9977], 14);
 
-// 2. On met le nouveau design de carte (Style pro et épuré)
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png').addTo(map);
+// Le nouveau fond de carte pur et élégant (sans logo Leaflet)
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19
+}).addTo(map);
                         { 
     zoomControl: false, 
     attributionControl: false 
