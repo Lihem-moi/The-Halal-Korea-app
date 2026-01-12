@@ -54,6 +54,11 @@
 </head>
 <body>
 
+    <div id="install-container" style="display: none; position: absolute; top: 110px; left: 50%; transform: translateX(-50%); z-index: 5000; width: 90%; max-width: 400px;">
+    <button id="btnInstall" style="width: 100%; background: var(--accent-gold); color: #000; border: none; padding: 12px; border-radius: 25px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+        📲 Installer l'application (Plein Écran)
+    </button>
+</div>
     <div id="toast"></div>
 
     <div class="top-interface">
@@ -180,6 +185,39 @@
         }
 
         window.onload = function() { setTimeout(function(){ map.invalidateSize(); }, 500); };
+
+        let deferredPrompt;
+const installContainer = document.getElementById('install-container');
+const btnInstall = document.getElementById('btnInstall');
+
+// Le navigateur détecte si le site PEUT être une application
+window.addEventListener('beforeinstallprompt', (e) => {
+    // On empêche Chrome d'afficher sa petite barre habituelle
+    e.preventDefault();
+    // On garde l'événement précieusement
+    deferredPrompt = e;
+    // On montre NOTRE bouton personnalisé
+    installContainer.style.display = 'block';
+});
+
+btnInstall.addEventListener('click', (e) => {
+    // On cache notre bouton
+    installContainer.style.display = 'none';
+    // On montre la fenêtre d'installation officielle
+    deferredPrompt.prompt();
+    // On attend la réponse de l'utilisateur
+    deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('L\'utilisateur a installé l\'app');
+        }
+        deferredPrompt = null;
+    });
+});
+
+// Si l'app est déjà installée, on cache le bouton
+window.addEventListener('appinstalled', (evt) => {
+    installContainer.style.display = 'none';
+});
     </script>
 </body>
 </html>
