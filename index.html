@@ -77,20 +77,19 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         
-        //  On définit la carte sans le logo Leaflet
+// On crée la carte en désactivant les outils Leaflet visibles (logo et zoom)
 var map = L.map('map', { 
     zoomControl: false, 
     attributionControl: false 
 }).setView([37.5332, 126.9977], 14);
 
-// Le nouveau fond de carte pur et élégant (sans logo Leaflet)
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
+// On utilise un fond de carte "CartoDB Voyager" - Très stable et propre
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     maxZoom: 19
 }).addTo(map);
-                        { 
-    zoomControl: false, 
-    attributionControl: false 
-}).setView([37.5332, 126.9977], 14);
+
+// On force la carte à se redessiner pour éviter l'écran blanc
+setTimeout(function(){ map.invalidateSize(); }, 500);
 
         let favoris = new Set();
 
