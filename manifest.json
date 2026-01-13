@@ -14,3 +14,13 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+        "icons": [
+    {
+      "src": "https://i.ibb.co/L6vV3Y9/the-halal-korea-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+   
+    }
+  ]
+}
