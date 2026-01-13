@@ -86,20 +86,23 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         
-// Initialisation de la carte sans logo Leaflet
+// 1. On crée la carte sans le logo Leaflet
 var map = L.map('map', { 
     zoomControl: false, 
-    attributionControl: false 
+    attributionControl: false,
+    worldCopyJump: false // Empêche la carte de "sauter"
 }).setView([37.5332, 126.9977], 15);
 
-// On utilise un style de carte très fiable qui ne buggera pas
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+// 2. On charge les images de la carte avec l'option "noWrap" (très important !)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    noWrap: true, // EMPECHE LA REPETITION DE LA CARTE
+    bounds: [[-90, -180], [90, 180]] // Garde les images dans les limites du monde
+}).addTo(map);
 
-// LA LIGNE MAGIQUE : On force la carte à s'étirer après 300ms
+// 3. On force la carte à se recalibrer après un court instant
 setTimeout(function(){ 
     map.invalidateSize(); 
-}, 300);
-
+}, 400);
 
         let favoris = new Set();
 
