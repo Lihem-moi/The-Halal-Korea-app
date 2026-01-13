@@ -8,7 +8,16 @@
     <style>
         :root { --main-green: #2e7d32; --accent-gold: #fbc02d; --bg-light: #f8f9fa; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
-        #map { width: 100%; height: 100%; z-index: 1; }
+        #map { 
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%; 
+    height: 100%; 
+    z-index: 1; 
+    background: #f0f0f0; /* Évite l'écran noir pendant le chargement */
+}
+
 
         /* Interface */
         .top-interface { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 400px; }
@@ -77,19 +86,20 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         
-// On crée la carte en désactivant les outils Leaflet visibles (logo et zoom)
+// Initialisation de la carte sans logo Leaflet
 var map = L.map('map', { 
     zoomControl: false, 
     attributionControl: false 
-}).setView([37.5332, 126.9977], 14);
+}).setView([37.5332, 126.9977], 15);
 
-// On utilise un fond de carte "CartoDB Voyager" - Très stable et propre
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19
-}).addTo(map);
+// On utilise un style de carte très fiable qui ne buggera pas
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-// On force la carte à se redessiner pour éviter l'écran blanc
-setTimeout(function(){ map.invalidateSize(); }, 500);
+// LA LIGNE MAGIQUE : On force la carte à s'étirer après 300ms
+setTimeout(function(){ 
+    map.invalidateSize(); 
+}, 300);
+
 
         let favoris = new Set();
 
