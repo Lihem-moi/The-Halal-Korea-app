@@ -138,15 +138,33 @@ setTimeout(function(){
             favoris.forEach(n => l.innerHTML += `<div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between;"><b>${n}</b><span onclick="toggleFav('${n}')">❌</span></div>`);
         }
 
-        // Marqueurs
-        function addPlace(lat, lng, nom, type) {
-            let emoji = type === 'resto' ? '🍜' : '🕌';
-            let marker = L.marker([lat, lng]).addTo(map);
-            marker.bindPopup(`<b>${nom}</b><br><button onclick="toggleFav('${nom}')" style="background:#2e7d32; color:white; border:none; border-radius:10px; padding:5px 10px; margin-top:5px;">❤️ Favoris</button>`);
-            return marker;
-        }
+        // Fonction pour créer une icône personnalisée avec un emoji
+function createCustomIcon(emoji) {
+    return L.divIcon({
+        html: `<div style="font-size: 24px; background: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 2px solid white;">${emoji}</div>`,
+        className: 'custom-div-icon',
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40]
+    });
+}
 
-        const m1 = addPlace(37.5332, 126.9977, "Grande Mosquée de Séoul", "mosquee");
+// Nouvelle fonction addPlace qui utilise les icônes
+function addPlace(lat, lng, nom, type) {
+    let emoji = type === 'resto' ? '🍜' : '🕌';
+    let marker = L.marker([lat, lng], { icon: createCustomIcon(emoji) }).addTo(map);
+    
+    marker.bindPopup(`
+        <div style="text-align:center;">
+            <b style="font-size:16px;">${nom}</b><br>
+            <button onclick="toggleFav('${nom}')" style="background:#2e7d32; color:white; border:none; border-radius:15px; padding:8px 15px; margin-top:10px; cursor:pointer;">❤️ Ajouter aux Favoris</button>
+        </div>
+    `);
+    return marker;
+}
+
+// Tes lieux (ils s'afficheront maintenant avec les nouveaux icônes !)
+const m1 = addPlace(37.5332, 126.9977, "Grande Mosquée de Séoul", "mosquee");
     
 
         // Recherche & Vol
