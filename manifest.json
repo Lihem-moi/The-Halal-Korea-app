@@ -7,14 +7,8 @@
   "background_color": "#ffffff",
   "theme_color": "#2e7d32",
   "orientation": "portrait",
-  "icons": [
-    {
-      "src": "https://i.ibb.co/L6vV3Y9/the-halal-korea-icon.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-        "icons": [
+  
+   "icons": [
     {
       "src": "https://i.ibb.co/L6vV3Y9/the-halal-korea-icon.png",
       "sizes": "512x512",
