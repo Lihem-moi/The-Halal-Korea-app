@@ -118,11 +118,19 @@ setTimeout(function(){
             setTimeout(() => t.style.top = "-60px", 2000);
         }
 
-        function toggleFav(n) {
-            if(favoris.has(n)) { favoris.delete(n); showToast("Retiré 💔"); }
-            else { favoris.add(n); showToast("Ajouté ❤️"); }
-            updateFavUI();
+       function toggleFav(n) {
+    if(favoris.has(n)) {
+        // La petite notification de confirmation
+        if(confirm(`Voulez-vous vraiment enlever "${n}" de vos favoris ?`)) {
+            favoris.delete(n);
+            showToast("Retiré des favoris 💔");
         }
+    } else {
+        favoris.add(n);
+        showToast("Ajouté aux favoris ❤️");
+    }
+    updateFavUI();
+}
 
         function updateFavUI() {
             const l = document.getElementById('fav-list');
