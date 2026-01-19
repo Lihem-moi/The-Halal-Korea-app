@@ -169,30 +169,36 @@ function addPlace(lat, lng, nom, type) {
 
 // Fonction magique pour tracer le chemin sur TA carte
 function calculateRoute(destLat, destLng) {
-    // Si un ancien trajet existe, on l'enlève
-    if (routingControl) {
-        map.removeControl(routingControl);
-    }
+    showToast("Calcul de l'itinéraire...");
 
-    // On récupère ta position actuelle (MY_LOCATION)
+    // On demande la position actuelle
     map.locate({setView: false});
-    
-    map.on('locationfound', function(e) {
+
+    map.once('locationfound', function(e) {
+        if (routingControl) {
+            map.removeControl(routingControl);
+        }
+
         routingControl = L.Routing.control({
             waypoints: [
                 L.latLng(e.latlng.lat, e.latlng.lng), // Départ : Toi
                 L.latLng(destLat, destLng) // Arrivée : Le resto
             ],
             lineOptions: {
-                styles: [{color: '#2e7d32', weight: 6}] // Ligne verte pour le Halal
+                styles: [{color: '#2e7d32', weight: 6, opacity: 0.8}]
             },
-            createMarker: function() { return null; }, // On ne rajoute pas de nouveaux pins
+            createMarker: function() { return null; },
             addWaypoints: false,
             routeWhileDragging: false,
-            show: false // On cache les instructions écrites pour garder la carte propre
+            show: false 
         }).addTo(map);
-        
-        map.closePopup(); // On ferme la bulle pour voir le trajet
+
+        showToast("Itinéraire tracé ! 🗺️");
+        map.closePopup();
+    });
+
+    map.once('locationerror', function() {
+        alert("Impossible de te localiser. Vérifie que ton GPS est activé sur ton téléphone !");
     });
 }
 
