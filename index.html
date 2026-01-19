@@ -168,41 +168,38 @@ function addPlace(lat, lng, nom, type) {
 }
 
 // Fonction magique pour tracer le chemin sur TA carte
-function calculateRoute(destLat, destLng) {
-    showToast("Recherche de ta position... 🛰️");
+let currentPolyline = null; // Pour stocker le tracé
 
-    // On configure la recherche GPS pour qu'elle soit plus rapide
+function calculateRoute(destLat, destLng) {
+    showToast("Localisation en cours... 📍");
+
     map.locate({setView: false, enableHighAccuracy: true});
 
     map.once('locationfound', function(e) {
-        showToast("Trajet en cours... 🗺️");
-        
-        if (routingControl) {
-            map.removeControl(routingControl);
-        }
+        // Si une ligne existe déjà, on l'enlève
+        if (currentPolyline) { map.removeLayer(currentPolyline); }
 
-        // On utilise l'API de routage avec des paramètres simplifiés pour plus de rapidité
-        routingControl = L.Routing.control({
-            waypoints: [
-                L.latLng(e.latlng.lat, e.latlng.lng),
-                L.latLng(destLat, destLng)
-            ],
-            lineOptions: {
-                styles: [{color: '#2e7d32', weight: 7, opacity: 0.9}]
-            },
-            createMarker: function() { return null; }, // On ne veut pas de nouveaux marqueurs moches
-            addWaypoints: false,
-            routeWhileDragging: false,
-            show: false,
-            fitSelectedRoutes: true // FORCE LA CARTE A ZOOMER SUR LE TRAJET
+        const startPoint = [e.latlng.lat, e.latlng.lng];
+        const endPoint = [destLat, destLng];
+
+        // On crée une ligne stylée (Verte Halal)
+        currentPolyline = L.polyline([startPoint, endPoint], {
+            color: '#2e7d32',
+            weight: 5,
+            opacity: 0.7,
+            dashArray: '10, 10', // Effet pointillés pour faire "itinéraire"
+            lineJoin: 'round'
         }).addTo(map);
 
+        // On ajuste la vue pour voir les deux points
+        map.fitBounds(currentPolyline.getBounds(), {padding: [50, 50]});
+        
+        showToast("C'est par là ! 🚀");
         map.closePopup();
     });
 
-    map.once('locationerror', function(err) {
-        console.log(err);
-        alert("Erreur GPS : " + err.message + ". Vérifie tes réglages de confidentialité !");
+    map.once('locationerror', function() {
+        alert("Active ton GPS pour voir la direction ! ✨");
     });
 }
 
