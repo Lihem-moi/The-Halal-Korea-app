@@ -192,6 +192,29 @@ function addPlace(lat, lng, nom, type) {
     `);
     return marker;
 }
+function getRoute(destLat, destLng, mode) {
+    showToast("Recherche d'itinéraire... 🗺️");
+    
+    map.locate({setView: false, enableHighAccuracy: true});
+    
+    map.once('locationfound', function(e) {
+        // 1. On dessine la ligne dans l'app pour le look
+        if (currentPolyline) { map.removeLayer(currentPolyline); }
+        currentPolyline = L.polyline([[e.latlng.lat, e.latlng.lng], [destLat, destLng]], {
+            color: '#2e7d32', weight: 4, opacity: 0.6, dashArray: '5, 10'
+        }).addTo(map);
+        map.fitBounds(currentPolyline.getBounds(), {padding: [40, 40]});
+
+        // 2. On lance l'itinéraire précis selon le mode
+        // Note : En Corée, Naver et Kakao sont rois, mais Google Maps reste le plus simple à intégrer
+        let transportMode = mode === 'walking' ? 'w' : (mode === 'driving' ? 'd' : 'r');
+        const url = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=${mode}`;
+        
+        // On l'ouvre dans une fenêtre discrète ou un onglet
+        window.open(url, '_blank');
+        map.closePopup();
+    });
+}
 
 // Fonction magique pour tracer le chemin sur TA carte
 let currentPolyline = null; // Pour stocker le tracé
