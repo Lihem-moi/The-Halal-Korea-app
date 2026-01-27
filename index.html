@@ -179,19 +179,20 @@ function addPlace(lat, lng, nom, type) {
     let marker = L.marker([lat, lng], { icon: createCustomIcon(emoji) }).addTo(map);
     
     marker.bindPopup(`
-        <div style="text-align:center; min-width:180px;">
+        <div style="text-align:center; min-width:200px; font-family: sans-serif;">
             <b style="font-size:16px; color:#2e7d32;">${nom}</b><br>
-            <p style="font-size:12px; margin: 5px 0;">Comment on y va ?</p>
-            <div class="route-options">
-                <button class="route-btn" onclick="getRoute(${lat}, ${lng}, 'walking')" title="À pied">🚶‍♂️</button>
-                <button class="route-btn" onclick="getRoute(${lat}, ${lng}, 'transit')" title="Métro/Bus">🚇</button>
-                <button class="route-btn" onclick="getRoute(${lat}, ${lng}, 'driving')" title="Voiture">🚗</button>
+            <p style="font-size:12px; margin: 8px 0;">Ouvrir l'itinéraire sur :</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="openKoreanMap(${lat}, ${lng}, 'naver')" style="background:#03C75A; color:white; border:none; border-radius:8px; padding:10px; cursor:pointer; flex:1; font-weight:bold;">Naver</button>
+                <button onclick="openKoreanMap(${lat}, ${lng}, 'kakao')" style="background:#FEE500; color:#3C1E1E; border:none; border-radius:8px; padding:10px; cursor:pointer; flex:1; font-weight:bold;">Kakao</button>
             </div>
-            <button onclick="toggleFav('${nom}')" style="background:none; border:none; color:#e91e63; cursor:pointer; margin-top:10px; font-weight:bold;">❤️ Favoris</button>
+            <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
+            <button onclick="toggleFav('${nom}')" style="background:none; border:none; color:#e91e63; cursor:pointer; font-size:12px;">❤️ Ajouter aux favoris</button>
         </div>
     `);
     return marker;
 }
+
 function getRoute(destLat, destLng, mode) {
     showToast("Recherche d'itinéraire... 🗺️");
     
