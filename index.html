@@ -193,6 +193,31 @@ function addPlace(lat, lng, nom, type) {
     return marker;
 }
 
+function openKoreanMap(lat, lng, platform) {
+    let url = "";
+    
+    if (platform === 'naver') {
+        // Lien profond pour l'application Naver Map
+        url = `nmap://navigation?dlat=${lat}&dlng=${lng}&dname=Destination&appname=com.example.halalkorea`;
+        // Version web de secours
+        const webUrl = `https://map.naver.com/v5/directions/-/-/${lat},${lng},Destination/-/walk`;
+        
+        // On tente d'ouvrir l'app, sinon le web
+        window.location.href = url;
+        setTimeout(() => { window.open(webUrl, '_blank'); }, 500);
+        
+    } else if (platform === 'kakao') {
+        // Lien pour KakaoMap
+        url = `kakaomap://route?ep=${lat},${lng}&by=PUBLICTRANSIT`;
+        const webUrl = `https://map.kakao.com/link/to/Destination,${lat},${lng}`;
+        
+        window.location.href = url;
+        setTimeout(() => { window.open(webUrl, '_blank'); }, 500);
+    }
+    
+    showToast("Bon voyage ! 🇰🇷");
+}
+        
 function getRoute(destLat, destLng, mode) {
     showToast("Recherche d'itinéraire... 🗺️");
     
