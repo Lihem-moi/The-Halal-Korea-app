@@ -183,11 +183,11 @@ let routingControl = null; // Pour stocker le tracé actuel
 function addPlace(lat, lng, nom, type, adresseKo = "") {
     let emoji = {
         'resto': '🍽️',
-        'mosquee': '',
-        'marche': '',
-        'epicerie': '',
-        'cafe': ''
-    }[type] || '';
+        'mosquee': '🕌',
+        'marche': '🛒',
+        'epicerie': '🏪',
+        'cafe': '🍰'
+    }[type] || '📍';
 
     let marker = L.marker([lat, lng], { icon: createCustomIcon(emoji) }).addTo(map);
     marker.category = type; // Pour le filtrage
@@ -217,7 +217,7 @@ function addPlace(lat, lng, nom, type, adresseKo = "") {
 function copyToClipboard(text) {
     if(!text) return;
     navigator.clipboard.writeText(text);
-    showToast("Adresse copiée ! ");
+    showToast("Adresse copiée ! ✅ ");
 }
 
 
