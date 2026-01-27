@@ -86,7 +86,7 @@ route-options {
         <div class="filters">
             <button class="filter-tag">🕌 Mosquées</button>
             <button class="filter-tag">🤲🏻 Salles de prière</button>
-            <button class="filter-tag">🍴 Restaurants</button>
+            <button class="filter-tag">🍽️ Restaurants</button>
             <button class="filter-tag">🛒 Marchés</button> 
             <button class="filter-tag">Tout</button>
             <button class="filter-tag">🏪 Épiceries</button>
@@ -180,28 +180,46 @@ function createCustomIcon(emoji) {
 
 let routingControl = null; // Pour stocker le tracé actuel
 
-function addPlace(lat, lng, nom, type) {
-    let emoji;
-    if (type === 'resto') emoji = '🍴';
-    else if (type === 'mosquee') emoji = '🕌';
-    else if (type === 'marche') emoji = '🛒'; // Icône pour les marchés
-    else emoji = '📍';
+function addPlace(lat, lng, nom, type, adresseKo = "") {
+    let emoji = {
+        'resto': '🍽️',
+        'mosquee': '',
+        'marche': '',
+        'epicerie': '',
+        'cafe': ''
+    }[type] || '';
+
     let marker = L.marker([lat, lng], { icon: createCustomIcon(emoji) }).addTo(map);
-    
+    marker.category = type; // Pour le filtrage
+
     marker.bindPopup(`
-        <div style="text-align:center; min-width:200px; font-family: sans-serif;">
+        <div style="text-align:center; min-width:200px;">
             <b style="font-size:16px; color:#2e7d32;">${nom}</b><br>
-            <p style="font-size:12px; margin: 8px 0;">Ouvrir l'itinéraire sur :</p>
-            <div style="display: flex; gap: 10px; justify-content: center;">
+            ${adresseKo ? `<code style="display:block; background:#f0f0f0; padding:5px; margin:5px 0; font-size:11px;">${adresseKo}</code>` : ''}
+            
+            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                <button onclick="copyToClipboard('${adresseKo}')" style="flex:1; background:#eee; border:1px solid #ccc; border-radius:5px; font-size:10px; cursor:pointer;"> Copier l'adresse</button>
+            </div>
+
+
+            <p style="font-size:12px; margin: 8px 0;">Itinéraire via :</p>
+            <div style="display: flex; gap: 8px;">
                 <button onclick="openKoreanMap(${lat}, ${lng}, 'naver')" style="background:#03C75A; color:white; border:none; border-radius:8px; padding:10px; cursor:pointer; flex:1; font-weight:bold;">Naver</button>
                 <button onclick="openKoreanMap(${lat}, ${lng}, 'kakao')" style="background:#FEE500; color:#3C1E1E; border:none; border-radius:8px; padding:10px; cursor:pointer; flex:1; font-weight:bold;">Kakao</button>
             </div>
-            <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-            <button onclick="toggleFav('${nom}')" style="background:none; border:none; color:#e91e63; cursor:pointer; font-size:12px;">❤️ Ajouter aux favoris</button>
         </div>
     `);
     return marker;
 }
+
+
+// Fonction pour copier l'adresse
+function copyToClipboard(text) {
+    if(!text) return;
+    navigator.clipboard.writeText(text);
+    showToast("Adresse copiée ! ");
+}
+
 
 function openKoreanMap(lat, lng, platform) {
     let url = "";
