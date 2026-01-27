@@ -176,7 +176,11 @@ function createCustomIcon(emoji) {
 let routingControl = null; // Pour stocker le tracé actuel
 
 function addPlace(lat, lng, nom, type) {
-    let emoji = type === 'resto' ? '🍴' : '🕌';
+    let emoji;
+    if (type === 'resto') emoji = '🍜';
+    else if (type === 'mosquee') emoji = '🕌';
+    else if (type === 'marche') emoji = '🛒'; // Icône pour les marchés
+    else emoji = '📍';
     let marker = L.marker([lat, lng], { icon: createCustomIcon(emoji) }).addTo(map);
     
     marker.bindPopup(`
