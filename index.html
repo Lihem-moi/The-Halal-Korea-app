@@ -175,14 +175,19 @@ function createCustomIcon(emoji) {
 let routingControl = null; // Pour stocker le tracé actuel
 
 function addPlace(lat, lng, nom, type) {
-    let emoji = type === 'resto' ? '🍴' : '🕌';
+    let emoji = type === 'resto' ? '🍜' : '🕌';
     let marker = L.marker([lat, lng], { icon: createCustomIcon(emoji) }).addTo(map);
     
     marker.bindPopup(`
-        <div style="text-align:center; min-width:150px;">
-            <b style="font-size:16px;">${nom}</b><br>
-            <button onclick="calculateRoute(${lat}, ${lng})" style="background:#007bff; color:white; border:none; border-radius:15px; padding:8px 15px; margin-top:10px; cursor:pointer; width:100%;">🚀 Y aller</button>
-            <button onclick="toggleFav('${nom}')" style="background:#2e7d32; color:white; border:none; border-radius:15px; padding:8px 15px; margin-top:5px; cursor:pointer; width:100%;">❤️ Favoris</button>
+        <div style="text-align:center; min-width:180px;">
+            <b style="font-size:16px; color:#2e7d32;">${nom}</b><br>
+            <p style="font-size:12px; margin: 5px 0;">Comment on y va ?</p>
+            <div class="route-options">
+                <button class="route-btn" onclick="getRoute(${lat}, ${lng}, 'walking')" title="À pied">🚶‍♂️</button>
+                <button class="route-btn" onclick="getRoute(${lat}, ${lng}, 'transit')" title="Métro/Bus">🚇</button>
+                <button class="route-btn" onclick="getRoute(${lat}, ${lng}, 'driving')" title="Voiture">🚗</button>
+            </div>
+            <button onclick="toggleFav('${nom}')" style="background:none; border:none; color:#e91e63; cursor:pointer; margin-top:10px; font-weight:bold;">❤️ Favoris</button>
         </div>
     `);
     return marker;
