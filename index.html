@@ -213,18 +213,13 @@ function addPlace(lat, lng, nom, type, adresseKo = "") {
 }
 
 
-// Nouvelle fonction pour Naver et Kakao
 function openKoreanMap(lat, lng, platform) {
-    let url = "";
     if (platform === 'naver') {
-        // Lien universel Naver qui ouvre l'app ou le web avec choix du mode
-        url = `https://map.naver.com/v5/directions/-/${lat},${lng},Destination/-/walk?c=15,0,0,0,dh`;
-        window.open(url, '_blank');
+        // Lien direct vers la recherche Naver avec coordonnées
+        window.open(`https://map.naver.com/v5/search/${lat},${lng}`, '_blank');
     } else if (platform === 'kakao') {
-        url = `https://map.kakao.com/link/to/Destination,${lat},${lng}`;
-        window.open(url, '_blank');
+        window.open(`https://map.kakao.com/link/to/Destination,${lat},${lng}`, '_blank');
     }
-    showToast("Bon voyage ! 🇰🇷");
 }
 
 // Nouvelle fonction Copier plus robuste
