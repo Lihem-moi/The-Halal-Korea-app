@@ -191,9 +191,10 @@ function addPlace(lat, lng, nom, type, adresseKo = "") {
 
     let marker = L.marker([lat, lng], { icon: createCustomIcon(emoji) }).addTo(map);
     marker.category = type; // Pour le filtrage
-
+    
+// Dans le marker.bindPopup de ta fonction addPlace :
     marker.bindPopup(`
-    // Dans le marker.bindPopup de ta fonction addPlace :
+    
 <div style="display: flex; gap: 8px;">
     <button onclick="openKoreanMap(${lat}, ${lng}, 'naver', '${nom.replace(/'/g, "\\'")}')" style="background:#03C75A; color:white; border:none; border-radius:8px; padding:10px; cursor:pointer; flex:1; font-weight:bold;">Naver</button>
     <button onclick="openKoreanMap(${lat}, ${lng}, 'kakao', '${nom.replace(/'/g, "\\'")}')" style="background:#FEE500; color:#3C1E1E; border:none; border-radius:8px; padding:10px; cursor:pointer; flex:1; font-weight:bold;">Kakao</button>
@@ -208,10 +209,7 @@ function addPlace(lat, lng, nom, type, adresseKo = "") {
 
 
             <p style="font-size:12px; margin: 8px 0;">Itinéraire via :</p>
-            <div style="display: flex; gap: 8px;">
-                <button onclick="openKoreanMap(${lat}, ${lng}, 'naver')" style="background:#03C75A; color:white; border:none; border-radius:8px; padding:10px; cursor:pointer; flex:1; font-weight:bold;">Naver</button>
-                <button onclick="openKoreanMap(${lat}, ${lng}, 'kakao')" style="background:#FEE500; color:#3C1E1E; border:none; border-radius:8px; padding:10px; cursor:pointer; flex:1; font-weight:bold;">Kakao</button>
-            </div>
+            
         </div>
     `);
     return marker;
