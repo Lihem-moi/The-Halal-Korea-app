@@ -213,37 +213,39 @@ function addPlace(lat, lng, nom, type, adresseKo = "") {
 }
 
 
-// Fonction pour copier l'adresse
-function copyToClipboard(text) {
-    if(!text) return;
-    navigator.clipboard.writeText(text);
-    showToast("Adresse copiée ! ✅ ");
-}
-
-
+// Nouvelle fonction pour Naver et Kakao
 function openKoreanMap(lat, lng, platform) {
     let url = "";
-    
     if (platform === 'naver') {
-        // Lien profond pour l'application Naver Map
-        url = `nmap://navigation?dlat=${lat}&dlng=${lng}&dname=Destination&appname=com.example.halalkorea`;
-        // Version web de secours
-        const webUrl = `https://map.naver.com/v5/directions/-/-/${lat},${lng},Destination/-/walk`;
-        
-        // On tente d'ouvrir l'app, sinon le web
-        window.location.href = url;
-        setTimeout(() => { window.open(webUrl, '_blank'); }, 500);
-        
+        // Lien universel Naver qui ouvre l'app ou le web avec choix du mode
+        url = `https://map.naver.com/v5/directions/-/${lat},${lng},Destination/-/walk?c=15,0,0,0,dh`;
+        window.open(url, '_blank');
     } else if (platform === 'kakao') {
-        // Lien pour KakaoMap
-        url = `kakaomap://route?ep=${lat},${lng}&by=PUBLICTRANSIT`;
-        const webUrl = `https://map.kakao.com/link/to/Destination,${lat},${lng}`;
-        
-        window.location.href = url;
-        setTimeout(() => { window.open(webUrl, '_blank'); }, 500);
+        url = `https://map.kakao.com/link/to/Destination,${lat},${lng}`;
+        window.open(url, '_blank');
+    }
+    showToast("Bon voyage ! 🇰🇷");
+}
+
+// Nouvelle fonction Copier plus robuste
+function copyToClipboard(text) {
+    if (!text) {
+        showToast("Pas d'adresse disponible");
+        return;
     }
     
-    showToast("Bon voyage ! 🇰🇷");
+    // Méthode de secours pour mobile
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showToast("Adresse copiée ! ✅");
+    } catch (err) {
+        showToast("Erreur lors de la copie");
+    }
+    document.body.removeChild(textArea);
 }
         
 function getRoute(destLat, destLng, mode) {
