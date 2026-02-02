@@ -217,22 +217,22 @@ function addPlace(lat, lng, nom, type, adresseKo = "") {
 
 
 function openKoreanMap(lat, lng, platform, nomLieu) {
+    // On prépare le nom pour qu'il soit lisible dans un lien
     const nomEncode = encodeURIComponent(nomLieu);
     let url = "";
 
     if (platform === 'naver') {
-        // Nouvelle méthode Naver : On cherche par coordonnées + nom pour être sûr à 100%
-        // Ça affiche le point et te laisse choisir ton mode de transport
-        url = `https://map.naver.com/v5/search/${lat},${lng}?title=${nomEncode}`;
+        // Lien Naver : recherche directe du nom aux coordonnées précises
+        url = `https://map.naver.com/v5/search/${nomEncode}?c=${lng},${lat},15,0,0,0,dh`;
     } else if (platform === 'kakao') {
-        // Nouvelle méthode Kakao : On utilise 'map' au lieu de 'to'
-        // Ça affiche l'endroit sur la carte avec le nom, sans lancer l'itinéraire direct
-        url = `https://map.kakao.com/link/map/${nomEncode},${lat},${lng}`;
+        // Lien Kakao : itinéraire vers le nom aux coordonnées
+        url = `https://map.kakao.com/link/to/${nomEncode},${lat},${lng}`;
     }
 
     window.open(url, '_blank');
-    showToast(`Recherche de ${nomLieu}... 🇰🇷`);
+    showToast(`Ouverture de ${nomLieu}... 🇰🇷`);
 }
+
 
 // Nouvelle fonction Copier plus robuste
 function copyToClipboard(text) {
