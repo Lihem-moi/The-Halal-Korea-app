@@ -240,6 +240,17 @@ function openKoreanMap(lat, lng, platform, nomLieu) {
     showToast(`Ouverture de ${nomLieu}... 🇰🇷`);
 }
 
+function openProfile() {
+    document.getElementById('profile-section').style.display = 'block';
+    // On met à jour le nombre de favoris (si tu as une liste de favoris)
+    // document.getElementById('fav-count').innerText = mesFavoris.length;
+}
+
+function closeProfile() {
+    document.getElementById('profile-section').style.display = 'none';
+}
+
+        
         function updatePrayerTimes() {
     // Horaires indicatifs pour Séoul en Février
     document.getElementById('fajr').innerText = "06:04";
