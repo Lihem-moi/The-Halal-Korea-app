@@ -240,6 +240,16 @@ function openKoreanMap(lat, lng, platform, nomLieu) {
     showToast(`Ouverture de ${nomLieu}... 🇰🇷`);
 }
 
+        function updatePrayerTimes() {
+    // Horaires indicatifs pour Séoul en Février
+    document.getElementById('fajr').innerText = "06:04";
+    document.getElementById('dhuhr').innerText = "12:44";
+    document.getElementById('asr').innerText = "15:42";
+    document.getElementById('maghrib').innerText = "18:02";
+    document.getElementById('isha').innerText = "19:25";
+}
+// On lance la fonction au démarrage
+updatePrayerTimes();
 
 // Nouvelle fonction Copier plus robuste
 function copyToClipboard(text) {
