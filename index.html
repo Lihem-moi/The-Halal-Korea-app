@@ -95,22 +95,13 @@ route-options {
             
         </div>
     </div>
-function openKoreanMap(lat, lng, platform, nomLieu) {
-    // On prépare le nom pour qu'il soit lisible dans un lien
-    const nomEncode = encodeURIComponent(nomLieu);
-    let url = "";
-
-    if (platform === 'naver') {
-        // Lien Naver : recherche directe du nom aux coordonnées précises
-        url = `https://map.naver.com/v5/search/${nomEncode}?c=${lng},${lat},15,0,0,0,dh`;
-    } else if (platform === 'kakao') {
-        // Lien Kakao : itinéraire vers le nom aux coordonnées
-        url = `https://map.kakao.com/link/to/${nomEncode},${lat},${lng}`;
-    }
-
-    window.open(url, '_blank');
-    showToast(`Ouverture de ${nomLieu}... 🇰🇷`);
-}
+<div id="prayer-times" style="background: rgba(255,255,255,0.9); padding: 10px; margin: 10px; border-radius: 12px; display: flex; justify-content: space-around; font-size: 11px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; overflow-x: auto;">
+    <div style="text-align:center;"><b>Fajr</b><br><span id="fajr">-:-</span></div>
+    <div style="text-align:center;"><b>Dhuhr</b><br><span id="dhuhr">-:-</span></div>
+    <div style="text-align:center;"><b>Asr</b><br><span id="asr">-:-</span></div>
+    <div style="text-align:center;"><b>Maghrib</b><br><span id="maghrib">-:-</span></div>
+    <div style="text-align:center;"><b>Isha</b><br><span id="isha">-:-</span></div>
+</div>
 
     <div id="map"></div>
     <button class="locate-btn" onclick="findMe()">📍</button>
