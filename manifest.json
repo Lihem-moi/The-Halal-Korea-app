@@ -10,9 +10,9 @@
   
    "icons": [
     {
-      "src": "laimage.jepg",
+      "src": "laimage.jpeg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
    
     }
