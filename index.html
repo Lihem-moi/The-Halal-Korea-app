@@ -239,6 +239,13 @@ function addPlace(lat, lng, nom, type, adresseKo = "") {
             <div style="display: flex; gap: 5px; margin-bottom: 10px;">
                 <button onclick="copyToClipboard('${adresseKo}')" style="flex:1; background:#eee; border:1px solid #ccc; border-radius:5px; font-size:10px; cursor:pointer;"> Copier l'adresse</button>
             </div>
+            // ... (code des boutons Naver/Kakao)
+
+<hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
+
+<button onclick="toggleFav('${nom}')" style="background:none; border:none; color:#e91e63; cursor:pointer; font-weight:bold; font-size:13px; width:100%;">
+    ⭐ Ajouter aux Favoris
+</button>
 
 
             <p style="font-size:12px; margin: 8px 0;">Itinéraire via :</p>
