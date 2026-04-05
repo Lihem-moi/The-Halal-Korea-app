@@ -401,6 +401,16 @@ addPlace(37.550364, 126.923152, "The Halal Fitzza", "resto", "서울 마포구 �
             else userMarker = L.circleMarker(e.latlng, {radius:8, fillColor:"#2196F3", color:"white", weight:3, opacity:1, fillOpacity:1}).addTo(map);
         });
 
+function openContact() {
+    // Cela ouvre l'application mail de l'utilisateur avec ton adresse et un sujet prêt
+    const email = "ton-email@exemple.com"; // 👈 Mets ton vrai email ici !
+    const sujet = encodeURIComponent("Suggestion pour The Halal Korea 🇰🇷");
+    const corps = encodeURIComponent("Salut ! J'ai trouvé un nouveau spot super à...");
+    
+    window.location.href = `mailto:${email}?subject=${sujet}&body=${corps}`;
+}
+
+    
         // Navigation
         function showView(v) {
             closePanels();
