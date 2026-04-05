@@ -411,6 +411,13 @@ function openContact() {
     window.location.href = `mailto:${email}?subject=${sujet}&body=${corps}`;
 }
 
+        function openAbout() {
+    document.getElementById('about-section').style.display = 'block';
+}
+
+function closeAbout() {
+    document.getElementById('about-section').style.display = 'none';
+}
     
         // Navigation
         function showView(v) {
