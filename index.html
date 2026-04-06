@@ -86,7 +86,31 @@ route-options {
     background: #e2e6ea;
     transform: translateY(-2px);
 }
-                     
+
+    /* Style par défaut de tes items de menu */
+.menu-item {
+    transition: background-color 0.3s, color 0.3s; /* Pour un effet de transition doux */
+}
+
+/* Style quand on clique sur l'item (sur mobile et ordinateur) */
+.menu-item.active {
+    background-color: #2e7d32 !important; /* Le vert de ton appli */
+    color: white !important;
+}
+
+/* Style spécifique pour l'ordinateur quand on passe la souris dessus (hover) */
+/* C'est ici que la magie du croissant de lune opère ! */
+@media (min-width: 768px) {
+    .menu-item:hover {
+        background-color: #f1f8e9; /* Un vert très clair */
+        color: #2e7d32;
+        /* Remplacement du curseur par le croissant de lune emoji */
+        /* Note: L'encodage 'data:image/svg+xml' permet d'utiliser un SVG directement */
+        cursor: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ctext y='16' font-size='16'%3E🌙%3C/text%3E%3C/svg%3E"), auto;
+    }
+}
+
+        
     </style>
 </head>
 <body>
