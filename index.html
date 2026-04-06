@@ -165,9 +165,9 @@ route-options {
       <div class="profile-menu">
             <div class="menu-item"><span> ⚙️ Paramètres</span> ❯</div>
             <div class="menu-item"><span> 🔔 Notifications</span> ❯</div>
-            <div class="menu-item"><span> 🌍 Langue (Français)</span> ❯</div>
+            <div class="menu-item" id="menu-lang" onclick="toggleMenuItem('lang')"><span>🌍 Langue (Français)</span> ❯</div>
             <div class="menu-item" onclick="openContact()"><span>💬 Aide & Contact</span> ❯</div>
-            <div class="menu-item" onclick="openAbout()"><span>📖 À propos de l'app</span> ❯</div>
+            <div class="menu-item" id="menu-about" onclick="toggleMenuItem('about')"><span>📖 À propos de l'app</span> ❯</div>
             <div class="menu-item logout">Déconnexion</div>
         </div>
     </div>
