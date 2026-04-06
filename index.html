@@ -473,6 +473,34 @@ function closeAbout() {
         }
 
         function closePanels() { document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active')); }
+
+        // Fonction pour gérer l'effet "cliqué" (actif) du menu
+function toggleMenuItem(menuName) {
+    // 1. On récupère l'élément HTML du menu
+    const menuItem = document.getElementById(`menu-${menuName}`);
+    
+    // 2. On ajoute la classe 'active' pour changer la couleur
+    menuItem.classList.add('active');
+
+    // 3. Si c'est le menu 'about', on ouvre le panneau 'À propos'
+    if (menuName === 'about') {
+        openAbout(); // Ta fonction openAbout existante qui gère l'affichage du panneau
+    }
+
+    // --- ICI TU POURRAS AJOUTER LE CODE POUR LES AUTRES MENUS ---
+    // if (menuName === 'lang') {
+    // // Code pour ouvrir le menu Langue
+    // }
+    // -----------------------------------------------------------
+
+    // 4. On planifie d'enlever la classe 'active' quand on ferme le panneau
+    // Pour l'instant, on l'enlève juste après un court instant pour la démo, 
+    // mais il faudra le lier à la fermeture réelle du panneau.
+    setTimeout(() => {
+        menuItem.classList.remove('active');
+    }, 500); // Enlève l'effet après 0.5 seconde
+}
+
     </script>
 
 </body>
