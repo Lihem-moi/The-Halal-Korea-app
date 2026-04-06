@@ -206,6 +206,19 @@ route-options {
     </div>
 </div>
 
+             <div id="lang-section" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:3000; padding:20px; box-sizing: border-box;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+        <h2 style="color: #2e7d32; margin: 0;">🌍 Langue / Language</h2>
+        <button onclick="closeLang()" style="background:none; border:none; font-size:24px;">✕</button>
+    </div>
+    <div style="margin-top: 20px;">
+        <div class="menu-item" onclick="alert('Déjà en Français !')">Français ✅</div>
+        <div class="menu-item" onclick="alert('English coming soon...')">English</div>
+        <div class="menu-item" onclick="alert('Arabe bientôt disponible...')">العربية</div>
+        <div class="menu-item" onclick="alert('한국어 bientôt disponible...')">한국어</div>
+        <div class="menu-item" onclick="alert('Español bientôt disponible...')">Español</div>
+    </div>
+</div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
