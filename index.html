@@ -498,28 +498,30 @@ function closeAbout() {
         function closePanels() { document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active')); }
 
 function toggleMenuItem(menuName) {
-    // 1. On enlève le vert de PARTOUT avant de continuer
+    // 1. On nettoie d'abord tout le vert existant (sécurité)
     const allItems = document.querySelectorAll('.menu-item');
     allItems.forEach(item => item.classList.remove('active'));
 
-    // 2. On récupère le bouton sur lequel on a cliqué
+    // 2. On récupère l'élément cliqué
     const menuItem = document.getElementById(`menu-${menuName}`);
     
     if (menuItem) {
-        // 3. On le met en vert
+        // 3. On l'allume en vert
         menuItem.classList.add('active');
 
-        // 4. On ouvre le bon panneau selon le nom
-        if (menuName === 'about') {
-            openAbout();
-        } else if (menuName === 'lang') {
-            openLang();
-        } else {
-            // Pour les boutons sans panneaux (Paramètres, etc.), on enlève le vert après 0.5s
-            setTimeout(() => {
-                menuItem.classList.remove('active');
-            }, 500);
-        }
+        // 4. On déclenche l'action après un très léger délai (100ms)
+        // pour que l'œil voit le changement de couleur, puis on éteint
+        setTimeout(() => {
+            if (menuName === 'about') {
+                openAbout();
+            } else if (menuName === 'lang') {
+                openLang();
+            }
+            
+            // 5. ON ÉTEINT LE VERT ICI
+            // Comme ça, le vert disparaît juste au moment où le panneau s'affiche
+            menuItem.classList.remove('active');
+        }, 150); 
     }
 }
 
