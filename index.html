@@ -497,17 +497,28 @@ function closeAbout() {
         function closePanels() { document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active')); }
 
 function toggleMenuItem(menuName) {
+    // 1. On enlève le vert de PARTOUT avant de continuer
+    const allItems = document.querySelectorAll('.menu-item');
+    allItems.forEach(item => item.classList.remove('active'));
+
+    // 2. On récupère le bouton sur lequel on a cliqué
     const menuItem = document.getElementById(`menu-${menuName}`);
-    if (!menuItem) return;
+    
+    if (menuItem) {
+        // 3. On le met en vert
+        menuItem.classList.add('active');
 
-    menuItem.classList.add('active');
-
-    if (menuName === 'about') openAbout();
-    if (menuName === 'lang') openLang(); // <--- Cette ligne est CRUCIALE !
-
-    // On retire le vert automatiquement après un petit délai pour les autres boutons
-    if (menuName !== 'about' && menuName !== 'lang') {
-        setTimeout(() => menuItem.classList.remove('active'), 500);
+        // 4. On ouvre le bon panneau selon le nom
+        if (menuName === 'about') {
+            openAbout();
+        } else if (menuName === 'lang') {
+            openLang();
+        } else {
+            // Pour les boutons sans panneaux (Paramètres, etc.), on enlève le vert après 0.5s
+            setTimeout(() => {
+                menuItem.classList.remove('active');
+            }, 500);
+        }
     }
 }
 
