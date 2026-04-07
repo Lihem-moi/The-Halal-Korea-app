@@ -206,17 +206,26 @@ route-options {
     </div>
 </div>
 
-             <div id="lang-section" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:3000; padding:20px; box-sizing: border-box;">
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-        <h2 style="color: #2e7d32; margin: 0;">🌍 Langue / Language</h2>
-        <button onclick="closeLang()" style="background:none; border:none; font-size:24px;">✕</button>
+             <div id="lang-section" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:3000; padding:20px; box-sizing: border-box; font-family: sans-serif;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #2e7d32; margin: 0;">🌍 Choisir la langue</h2>
+        <button onclick="closeLang()" style="background:none; border:none; font-size:24px; cursor:pointer;">✕</button>
     </div>
-    <div style="margin-top: 20px;">
-        <div class="menu-item" onclick="alert('Déjà en Français !')">Français ✅</div>
-        <div class="menu-item" onclick="alert('English coming soon...')">English</div>
-        <div class="menu-item" onclick="alert('Arabe bientôt disponible...')">العربية</div>
-        <div class="menu-item" onclick="alert('한국어 bientôt disponible...')">한국어</div>
-        <div class="menu-item" onclick="alert('Español bientôt disponible...')">Español</div>
+
+    <div class="menu-item" onclick="alert('L\'application est déjà en Français')" style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f0f0f0;">
+        <span>🇫🇷 Français</span> <span style="color: #2e7d32;">✔</span>
+    </div>
+    <div class="menu-item" onclick="alert('English coming soon!')" style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f0f0f0;">
+        <span>🇬🇧 English</span> <span style="color: #ccc;">❯</span>
+    </div>
+    <div class="menu-item" onclick="alert('한국어 bientôt disponible !')" style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f0f0f0;">
+        <span>🇰🇷 한국어</span> <span style="color: #ccc;">❯</span>
+    </div>
+    <div class="menu-item" onclick="alert('Arabe bientôt disponible !')" style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f0f0f0;">
+        <span>🇸🇦 العربية</span> <span style="color: #ccc;">❯</span>
+    </div>
+    <div class="menu-item" onclick="alert('Español próximamente...')" style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f0f0f0;">
+        <span>🇪🇸 Español</span> <span style="color: #ccc;">❯</span>
     </div>
 </div>
 
