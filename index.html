@@ -530,16 +530,12 @@ function closeAbout() {
         menuItem.classList.add('active');
 
         setTimeout(() => {
-            if (menuName === 'about') {
-                openAbout();
-            } else if (menuName === 'lang') {
-                openLang();
-            } else if (menuName === 'contact') {
-                // 📧 On relance ta fonction d'email ici !
-                openContact(); 
-            }
+            if (menuName === 'about') openAbout();
+            else if (menuName === 'lang') openLang();
+            else if (menuName === 'contact') openContact();
+            else if (menuName === 'settings') openSettings(); // <-- Nouveau !
+            else if (menuName === 'notif') openNotif(); // <-- Nouveau !
             
-            // On éteint le vert juste après l'action
             menuItem.classList.remove('active');
         }, 150); 
     }
