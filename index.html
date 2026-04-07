@@ -497,34 +497,32 @@ function closeAbout() {
 
         function closePanels() { document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active')); }
 
-function toggleMenuItem(menuName) {
-    // 1. On nettoie d'abord tout le vert existant (sécurité)
+
+
+        function toggleMenuItem(menuName) {
     const allItems = document.querySelectorAll('.menu-item');
     allItems.forEach(item => item.classList.remove('active'));
 
-    // 2. On récupère l'élément cliqué
     const menuItem = document.getElementById(`menu-${menuName}`);
     
     if (menuItem) {
-        // 3. On l'allume en vert
         menuItem.classList.add('active');
 
-        // 4. On déclenche l'action après un très léger délai (100ms)
-        // pour que l'œil voit le changement de couleur, puis on éteint
         setTimeout(() => {
             if (menuName === 'about') {
                 openAbout();
             } else if (menuName === 'lang') {
                 openLang();
+            } else if (menuName === 'contact') {
+                // 📧 On relance ta fonction d'email ici !
+                openContact(); 
             }
             
-            // 5. ON ÉTEINT LE VERT ICI
-            // Comme ça, le vert disparaît juste au moment où le panneau s'affiche
+            // On éteint le vert juste après l'action
             menuItem.classList.remove('active');
         }, 150); 
     }
 }
-
     function openLang() {
     document.getElementById('lang-section').style.display = 'block';
 }
