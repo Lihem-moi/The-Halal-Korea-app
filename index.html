@@ -131,14 +131,23 @@ route-options {
 
             
         
+     <div id="prayer-times-container" style="background: #f9f9f9; padding: 15px; border-radius: 10px; margin-top: 10px;">
+    <h3 style="color: #2e7d32; margin-top: 0;">📅 Horaires à Séoul</h3>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <span>Fajr:</span> <b id="fajr">-:-</b>
     </div>
-<div id="prayer-times" style="background: rgba(255,255,255,0.9); padding: 10px; margin: 10px; border-radius: 12px; display: flex; justify-content: space-around; font-size: 11px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; overflow-x: auto;">
-    <div style="text-align:center;"><b>Fajr</b><br><span id="fajr">-:-</span></div>
-    <div style="text-align:center;"><b>Dhuhr</b><br><span id="dhuhr">-:-</span></div>
-    <div style="text-align:center;"><b>Asr</b><br><span id="asr">-:-</span></div>
-    <div style="text-align:center;"><b>Maghrib</b><br><span id="maghrib">-:-</span></div>
-    <div style="text-align:center;"><b>Isha</b><br><span id="isha">-:-</span></div>
-</div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <span>Dhuhr:</span> <b id="dhuhr">-:-</b>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <span>Asr:</span> <b id="asr">-:-</b>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <span>Maghrib:</span> <b id="maghrib">-:-</b>
+    </div>
+    <div style="display: flex; justify-content: space-between;">
+        <span>Isha:</span> <b id="isha">-:-</b>
+    </div>
 </div>
     <div id="map"></div>
     <button class="locate-btn" onclick="findMe()">📍</button>
