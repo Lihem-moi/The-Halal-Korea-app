@@ -271,6 +271,16 @@ setTimeout(function(){
     map.invalidateSize(); 
 }, 400);
 
+        var map = L.map('map', {
+    center: [37.5665, 126.9780], // Séoul
+    zoom: 13,
+    // Ces options activent la manipulation fluide
+    touchZoom: true,
+    rotate: true, // Active la rotation
+    touchRotate: true, // Permet de tourner avec deux doigts
+    bearing: 0 // L'angle de départ (Nord)
+});
+
         let favoris = new Set();
 
         function showToast(m) {
