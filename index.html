@@ -131,23 +131,14 @@ route-options {
 
             
         
-     <div id="prayer-times-container" style="background: #f9f9f9; padding: 15px; border-radius: 10px; margin-top: 10px;">
-    <h3 style="color: #2e7d32; margin-top: 0;">📅 Horaires à Séoul</h3>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-        <span>Fajr:</span> <b id="fajr">-:-</b>
     </div>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-        <span>Dhuhr:</span> <b id="dhuhr">-:-</b>
-    </div>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-        <span>Asr:</span> <b id="asr">-:-</b>
-    </div>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-        <span>Maghrib:</span> <b id="maghrib">-:-</b>
-    </div>
-    <div style="display: flex; justify-content: space-between;">
-        <span>Isha:</span> <b id="isha">-:-</b>
-    </div>
+<div id="prayer-times" style="background: rgba(255,255,255,0.9); padding: 10px; margin: 10px; border-radius: 12px; display: flex; justify-content: space-around; font-size: 11px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; overflow-x: auto;">
+    <div style="text-align:center;"><b>Fajr</b><br><span id="fajr">-:-</span></div>
+    <div style="text-align:center;"><b>Dhuhr</b><br><span id="dhuhr">-:-</span></div>
+    <div style="text-align:center;"><b>Asr</b><br><span id="asr">-:-</span></div>
+    <div style="text-align:center;"><b>Maghrib</b><br><span id="maghrib">-:-</span></div>
+    <div style="text-align:center;"><b>Isha</b><br><span id="isha">-:-</span></div>
+</div>
 </div>
     <div id="map"></div>
     <button class="locate-btn" onclick="findMe()">📍</button>
@@ -382,37 +373,15 @@ function openKoreanMap(lat, lng, platform, nomLieu) {
 
         
         function updatePrayerTimes() {
-    // Coordonnées de Séoul (ou tu peux utiliser ta position GPS si tu préfères)
-    const lat = 37.5665;
-    const lon = 126.9780;
-    
-    // Appel à l'API Aladhan (Méthode 3 pour l'Asie/Corée souvent utilisée)
-    const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=3`;
-
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            const times = data.data.timings;
-            
-            // Mise à jour des éléments HTML par leur ID
-            document.getElementById('fajr').innerText = times.Fajr;
-            document.getElementById('dhuhr').innerText = times.Dhuhr;
-            document.getElementById('asr').innerText = times.Asr;
-            document.getElementById('maghrib').innerText = times.Maghrib;
-            document.getElementById('isha').innerText = times.Isha;
-            
-            console.log("Horaires de prière mis à jour !");
-        })
-        .catch(error => {
-            console.error("Erreur lors de la récupération des horaires:", error);
-        });
+    // Horaires indicatifs pour Séoul en Février
+    document.getElementById('fajr').innerText = "06:04";
+    document.getElementById('dhuhr').innerText = "12:44";
+    document.getElementById('asr').innerText = "15:42";
+    document.getElementById('maghrib').innerText = "18:02";
+    document.getElementById('isha').innerText = "19:25";
 }
-
-// Lancer la mise à jour au chargement de la page
-window.onload = function() {
-    updatePrayerTimes();
-    // Tu peux aussi laisser tes autres fonctions d'initialisation ici
-};
+// On lance la fonction au démarrage
+updatePrayerTimes();
 
 // Nouvelle fonction Copier plus robuste
 function copyToClipboard(text) {
