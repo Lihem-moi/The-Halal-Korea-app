@@ -494,13 +494,36 @@ addPlace(37.550364, 126.923152, "The Halal Fitzza", "resto", "서울 마포구 �
             }
         });
 
-        // GPS Pin Bleu
-        var userMarker;
-        function findMe() { map.locate({setView: true, maxZoom: 16}); }
-        map.on('locationfound', (e) => {
-            if(userMarker) userMarker.setLatLng(e.latlng);
-            else userMarker = L.circleMarker(e.latlng, {radius:8, fillColor:"#2196F3", color:"white", weight:3, opacity:1, fillOpacity:1}).addTo(map);
-        });
+        // Création d'une icône bleue spéciale pour se différencier des restaurants
+var blueIcon = L.divIcon({
+    className: 'user-location-icon',
+    html: '<div style="background-color: #2196F3; width: 15px; height: 15px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>',
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+});
+
+var userMarker;
+
+map.on('locationfound', function(e) {
+    // Si le marqueur existe déjà, on le déplace, sinon on le crée
+    if (userMarker) {
+        userMarker.setLatLng(e.latlng);
+    } else {
+        userMarker = L.marker(e.latlng, {icon: blueIcon, zIndexOffset: 1000}).addTo(map);
+    }
+    
+    // On se centre sur la position
+    map.flyTo(e.latlng, 16);
+});
+
+map.on('locationerror', function(e) {
+    alert("Oups ! Impossible de te trouver. Vérifie tes paramètres GPS. 📍");
+});
+
+// Pour lancer la détection au clic sur ton bouton "Ma position"
+function findMe() {
+    map.locate({setView: true, maxZoom: 16});
+}
 
 function openContact() {
     // Cela ouvre l'application mail de l'utilisateur avec ton adresse et un sujet prêt
