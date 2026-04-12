@@ -26,14 +26,8 @@
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
-    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js"></script>
-    
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
     <style>
-        .leaflet-marker-icon {
-    display: block !important;
-}
         :root { --main-green: #2e7d32; --accent-gold: #fbc02d; --bg-light: #f8f9fa; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
         #map { 
@@ -116,7 +110,6 @@ route-options {
     }
 }
 
-        
         
     </style>
 </head>
@@ -277,16 +270,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 setTimeout(function(){ 
     map.invalidateSize(); 
 }, 400);
-
-        var map = L.map('map', {
-    center: [37.5665, 126.9780], // Séoul
-    zoom: 13,
-    // Ces options activent la manipulation fluide
-    touchZoom: true,
-    rotate: true, // Active la rotation
-    touchRotate: true, // Permet de tourner avec deux doigts
-    bearing: 0 // L'angle de départ (Nord)
-});
 
         let favoris = new Set();
 
@@ -497,36 +480,13 @@ addPlace(37.550364, 126.923152, "The Halal Fitzza", "resto", "서울 마포구 �
             }
         });
 
-        // Création d'une icône bleue spéciale pour se différencier des restaurants
-var blueIcon = L.divIcon({
-    className: 'user-location-icon',
-    html: '<div style="background-color: #2196F3; width: 15px; height: 15px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>',
-    iconSize: [20, 20],
-    iconAnchor: [10, 10]
-});
-
-var userMarker;
-
-map.on('locationfound', function(e) {
-    // Si le marqueur existe déjà, on le déplace, sinon on le crée
-    if (userMarker) {
-        userMarker.setLatLng(e.latlng);
-    } else {
-        userMarker = L.marker(e.latlng, {icon: blueIcon, zIndexOffset: 1000}).addTo(map);
-    }
-    
-    // On se centre sur la position
-    map.flyTo(e.latlng, 16);
-});
-
-map.on('locationerror', function(e) {
-    alert("Oups ! Impossible de te trouver. Vérifie tes paramètres GPS. 📍");
-});
-
-// Pour lancer la détection au clic sur ton bouton "Ma position"
-function findMe() {
-    map.locate({setView: true, maxZoom: 16});
-}
+        // GPS Pin Bleu
+        var userMarker;
+        function findMe() { map.locate({setView: true, maxZoom: 16}); }
+        map.on('locationfound', (e) => {
+            if(userMarker) userMarker.setLatLng(e.latlng);
+            else userMarker = L.circleMarker(e.latlng, {radius:8, fillColor:"#2196F3", color:"white", weight:3, opacity:1, fillOpacity:1}).addTo(map);
+        });
 
 function openContact() {
     // Cela ouvre l'application mail de l'utilisateur avec ton adresse et un sujet prêt
